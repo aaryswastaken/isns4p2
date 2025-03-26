@@ -17,6 +17,7 @@ class VuePrincipale(tk.Tk):
 
         # Référence au contrôleur
         self.controleur = controleur
+        self.controleur.link_parent(self)
 
         # Widgets
         self.creer_widgets()
