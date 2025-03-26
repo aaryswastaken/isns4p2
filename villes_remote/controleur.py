@@ -36,6 +36,8 @@ class Controleur:
     
     def link_parent(self, parent):
         self.parent = parent 
+        # legacy 
+        self.lier_vue(parent)
 
     def remplir_graphe(self):
         """
@@ -48,7 +50,7 @@ class Controleur:
             for line in lines:
                 _i, nom, lat, lon, haut = line.split(", ")
                 
-                ville = Ville(nom, lat, lon, haut)
+                ville = Ville(nom, float(lat), float(lon), int(haut))
                 self.graphe.ajouter_ville(ville)
         
         self.graphe.creation_aretes()
@@ -81,11 +83,11 @@ class Controleur:
             case "Nombre":
                 cnt = self.graphe.nombre_villes()
 
-                self.parent.text_area.insert(tk.INSERT, f"Il y a {cnt} villes")
+                self.parent.text_area.insert(tk.INSERT, f"Il y a {cnt} villes\n")
             case "Distance":
                 d_moy = self.graphe.distance_moyenne()
 
-                self.parent.text_area.insert(tk.INSERT, f"La distance moyenne est de {d_moy}") 
+                self.parent.text_area.insert(tk.INSERT, f"La distance moyenne est de {d_moy:.2f}km\n") 
             case "Relier":
                 try:
                     seuil = int(self.parent.entry.get())
@@ -94,7 +96,7 @@ class Controleur:
                 
                 pairs = self.graphe.noeuds_sup_distance(seuil)
 
-                self.parent.text_are.insert(tk.INSERT, f" -- Seuil: {seuil}, cnt: {len(pairs)}")
+                self.parent.text_area.insert(tk.INSERT, f" -- Seuil: {seuil}, cnt: {len(pairs)}\n")
                 for pair in pairs:
                     self.parent.text_area.insert(tk.INSERT, f"({pair[0]}, {pair[1]}, {pair[2]})\n")
             case "Effacer":

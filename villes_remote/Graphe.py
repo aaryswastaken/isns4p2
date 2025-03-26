@@ -6,6 +6,7 @@ Created on Mon Jan 13 13:11:32 2025
 @author: frindel
 """
 from typing import List, Dict, Tuple
+from Ville import Ville
 import math
 
 class Graphe:
@@ -31,11 +32,24 @@ class Graphe:
             haut (int): Altitude de la ville.
         """
 
+        self.carte[ville.nom] = {"ville": ville, "voisins": []}  
+
+
     def creation_aretes(self):
         """
         Crée les arêtes du graphe sous la forme d'une liste d'adjacence.
         Chaque arête est représentée par une distance entre deux villes.
         """
+
+        for name in self.carte:
+            for other in self.carte:
+                if other == name:
+                    continue  # continue would mean every non diag 
+                
+                d = self.carte[name]["ville"].distance_km(self.carte[other]["ville"])
+                self.carte[name]["voisins"].append((self.carte[other]["ville"], d))
+
+
 
     def nombre_villes(self):
         """
@@ -44,12 +58,27 @@ class Graphe:
         Returns:
             int: Nombre de villes.
         """
-    
+
+        return len(self.carte)
+
     
     def distance_moyenne(self):
         """
         Calcule la distance moyenne des arêtes du graphe sans utiliser de set ou de sorted.
         """
+
+        acc = 0 
+        i = 0 
+
+        for name in self.carte:
+            for other in self.carte:
+                if other == name:
+                    break  # means every non diag and one triangle
+
+                acc += self.carte[name]["ville"].distance_km(self.carte[other]["ville"])
+                i += 1 
+
+        return acc / i 
 
         
     def noeuds_sup_distance(self, seuil):
@@ -58,6 +87,19 @@ class Graphe:
         :param seuil: Distance minimale pour inclure une arête.
         :return: Liste des tuples (ville_a, ville_b, distance).
         """
+
+        out = [] 
+
+        for name in self.carte:
+            for other in self.carte:
+                if other == name:
+                    break  # every non diag and one triangle 
+
+                d = self.carte[name]["ville"].distance_km(self.carte[other]["ville"])
+                if d > seuil:
+                    out.append((self.carte[name]["ville"], self.carte[other]["ville"], d))
+
+        return out 
 
 
     def prim(self, sommet_depart):
